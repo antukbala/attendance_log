@@ -41,6 +41,19 @@ async function insertAttendanceLog(req, res) {
     }
 }
 
+async function getAttendanceLog(req, res) {
+    try {
+        const { user_id, attendance_type, date, status } = req.query;
+        const values = { userId: user_id, attendanceType: attendance_type.split(','), date, status };
+        const attendance = await attendanceModel.getAttendanceLogByUserIdAndDate(values);
+        return res.send(attendance);
+    } catch (error) {
+        console.log(error);
+        res.send(error);
+    }
+}
+
 module.exports = {
-    insertAttendanceLog
+    insertAttendanceLog,
+    getAttendanceLog
 }

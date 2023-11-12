@@ -1,6 +1,7 @@
 exports.CONSTANTS = {
     MAX_VALID_DISTANCE: 100,
     NEGETIVE_VALUE: -1,
+    NA: 'n/a',
 
     LOG_TYPE: {
         AUTO: 'auto'
@@ -14,10 +15,6 @@ exports.CONSTANTS = {
     VALIDITY: {
         VALID: 'valid',
         INVALID: 'invalid'
-    },
-
-    ADDITIONAL_DETAILS: {
-        NA: 'n/a'
     },
 
     RESPONSE_CODE: {

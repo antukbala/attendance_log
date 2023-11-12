@@ -8,6 +8,10 @@ function includeRoutes(app) {
     app.post('/attendance', [
         attendanceLog.insertAttendanceLog
     ]);
+
+    app.get('/attendance', [
+        attendanceLog.getAttendanceLog
+    ]);
 }
 
 module.exports = {

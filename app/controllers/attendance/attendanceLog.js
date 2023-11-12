@@ -1,6 +1,7 @@
 const DATE = require('../../services/dateTime');
 const DISTANCE = require('../../services/distanceCalculation');
 const attendanceModel = require('../../models/attendance/attendanceLog');
+const { CONSTANTS } = require('../../services/constants');
 
 async function insertAttendanceLog(req, res) {
     try {
@@ -8,12 +9,12 @@ async function insertAttendanceLog(req, res) {
         const values = { userId: user_id, latitude, longitude, logDate: log_date, logTime: log_time, attendanceType: attendance_type, workEnvironment: work_environment };
         const currentDateTime = DATE.getCurrentDateTime();
 
-        if (values.logDate !== 'auto' || values.logTime !== 'auto') {
-            values.logDate = (values.logDate === 'auto') ? currentDateTime.date : values.logDate;
-            values.logTime = (values.logTime === 'auto') ? currentDateTime.time : values.logTime;
+        if (values.logDate !== CONSTANTS.LOG_TYPE.AUTO || values.logTime !== CONSTANTS.LOG_TYPE.AUTO) {
+            values.logDate = (values.logDate === CONSTANTS.LOG_TYPE.AUTO) ? currentDateTime.date : values.logDate;
+            values.logTime = (values.logTime === CONSTANTS.LOG_TYPE.AUTO) ? currentDateTime.time : values.logTime;
         }
 
-        values.logDateTime = (values.logDate === 'auto' && values.logTime === 'auto') ? `${currentDateTime.date} ${currentDateTime.time}` : `${values.logDate} ${values.logTime}`;
+        values.logDateTime = (values.logDate === CONSTANTS.LOG_TYPE.AUTO && values.logTime === CONSTANTS.LOG_TYPE.AUTO) ? `${currentDateTime.date} ${currentDateTime.time}` : `${values.logDate} ${values.logTime}`;
         values.distance = DISTANCE.calculateDistanceByHaversineFormula(process.env.LAT_OFFICE, process.env.LONG_OFFICE, values.latitude, values.longitude, 'm');
         values.status = 'active';
 

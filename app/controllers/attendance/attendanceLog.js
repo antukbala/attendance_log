@@ -16,7 +16,8 @@ async function insertAttendanceLog(req, res) {
 
         values.logDateTime = (values.logDate === CONSTANTS.LOG_TYPE.AUTO && values.logTime === CONSTANTS.LOG_TYPE.AUTO) ? `${currentDateTime.date} ${currentDateTime.time}` : `${values.logDate} ${values.logTime}`;
         values.distance = DISTANCE.calculateDistanceByHaversineFormula(process.env.LAT_OFFICE, process.env.LONG_OFFICE, values.latitude, values.longitude, 'm');
-        values.status = 'active';
+        values.validity = (values.distance <= CONSTANTS.MAX_VALID_DISTANCE) ? CONSTANTS.VALIDITY.VALID : CONSTANTS.VALIDITY.INVALID;
+        values.status = CONSTANTS.STATUS.ACTIVE;
 
         const attendanceId = await attendanceModel.insertAttendanceLog(values);
 
@@ -26,7 +27,7 @@ async function insertAttendanceLog(req, res) {
             message: 'attendance saved'
         };
 
-        if (attendanceId === -1) {
+        if (attendanceId === CONSTANTS.NEGETIVE_VALUE) {
             finalOutput = {
                 response_code: CONSTANTS.RESPONSE_CODE.FAIL,
                 message: `can't save attendance`

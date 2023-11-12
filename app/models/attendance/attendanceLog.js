@@ -1,5 +1,6 @@
 const DB = require('../../../libs/dbConnect/mysql/attendanceDB');
 const SQL = require('../sqlQueries');
+const { CONSTANTS } = require('../../services/constants');
 
 async function insertAttendanceLog(values) {
     try {
@@ -7,9 +8,9 @@ async function insertAttendanceLog(values) {
         try {
             let query = SQL.Attendance.insertAttendance;
             let params = [ values.userId, values.attendanceType, values.workEnvironment, values.logDateTime,
-            values.latitude, values.longitude, values.distance, values.status ];
+            values.latitude, values.longitude, values.distance, values.status, values.validity ];
 
-            if (values.additionalDetails !== 'n/a') {
+            if (values.additionalDetails !== CONSTANTS.ADDITIONAL_DETAILS.NA) {
                 query = `${query.slice(0, -1)}, additional_details = ?;`;
                 params.push(values.additionalDetails);
             }

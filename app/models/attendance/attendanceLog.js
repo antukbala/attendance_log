@@ -15,7 +15,7 @@ async function insertAttendanceLog(values) {
             }
 
             const attendance = await DB.doQuery(connection, query, params);
-            return Object(attendance).hasOwnProperty('insertId') ? attendance.insertId : -1;
+            return attendance.hasOwnProperty('insertId') ? attendance.insertId : -1;
         } finally {
             connection.release();
         }

@@ -20,5 +20,7 @@ function calculateDistanceByHaversineFormula(targetLatitude, targetLongitude, us
     }
 }
 
-console.log(calculateDistanceByHaversineFormula(23.7792704, 90.3801065, 23.7792745, 90.3808767, 'm'));
+module.exports = {
+    calculateDistanceByHaversineFormula
+}
   

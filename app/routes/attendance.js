@@ -5,13 +5,17 @@ function includeRoutes(app) {
         return res.send('project is running');
     });
 
+    app.get('/attendance', [
+        attendanceLog.getAttendanceLog
+    ]);
+
     app.post('/attendance', [
         attendanceLog.insertAttendanceLog
     ]);
 
-    app.get('/attendance', [
-        attendanceLog.getAttendanceLog
-    ]);
+    // app.patch('/attendance', [
+    //     attendanceLog.insertAttendanceLog
+    // ]);
 }
 
 module.exports = {

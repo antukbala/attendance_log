@@ -22,9 +22,9 @@ async function insertAttendanceLog(req, res) {
         values.status = CONSTANTS.STATUS.ACTIVE;
 
         values.attendanceId = await attendanceModel.insertAttendanceLogOnAttendanceLogTable(values);
-        if (values.attendanceId === -1) { return res.send(Helper.generateResponse(CONSTANTS.RESPONSE_CODE.FAILED_CASES, CONSTANTS.MESSAGE.CANT_SAVE_ATTENDANCE)); };
+        if (values.attendanceId === CONSTANTS.NEGETIVE_VALUE) { return res.send(Helper.generateResponse(CONSTANTS.RESPONSE_CODE.FAILED_CASES, CONSTANTS.MESSAGE.CANT_SAVE_ATTENDANCE)); };
         const attendanceStatusId = await attendanceModel.insertAttendanceOnAttendanceStatusTable(values.attendanceId, 'active');
-        if (attendanceStatusId === -1) { return res.send(Helper.generateResponse(CONSTANTS.RESPONSE_CODE.FAILED_CASES, CONSTANTS.MESSAGE.CANT_SAVE_ATTENDANCE)); };
+        if (attendanceStatusId === CONSTANTS.NEGETIVE_VALUE) { return res.send(Helper.generateResponse(CONSTANTS.RESPONSE_CODE.FAILED_CASES, CONSTANTS.MESSAGE.CANT_SAVE_ATTENDANCE)); };
 
         finalOutput = Helper.generateResponse(CONSTANTS.RESPONSE_CODE.SUCCESS, CONSTANTS.MESSAGE.SAVED_ATTENDANCE, 'attendance_id', values.attendanceId);
         if (values.attendanceId === CONSTANTS.NEGETIVE_VALUE) {
@@ -40,8 +40,8 @@ async function insertAttendanceLog(req, res) {
 
 async function getAttendanceLog(req, res) {
     try {
-        const { user_id, attendance_type, date, status } = req.query;
-        const values = { userId: user_id, attendanceType: attendance_type.split(','), date, status };
+        const { user_id, attendance_type, start_date, end_date, attendance_status } = req.query;
+        const values = { userId: user_id, attendanceType: attendance_type.split(','), startDate: start_date, endDate: end_date, attendanceStatus: attendance_status };
         const attendance = await attendanceModel.getAttendanceLogByUserIdAndDate(values);
         return res.send(attendance);
     } catch (error) {

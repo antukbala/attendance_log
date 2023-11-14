@@ -42,7 +42,7 @@ async function getAttendanceLogByUserIdAndDate(values) {
         let connection = await DB.dbConnection();
         try {
             let query = SQL.Attendance.GetAttendanceLogByUserIdAndDate;
-            let params = [ values.userId, values.date, values.status ];
+            let params = [ values.userId, values.date ];
 
             if (values.attendanceType.includes(CONSTANTS.NA) === false) {
                 query = `${query.slice(0, -1)} and attendance_type in (`;

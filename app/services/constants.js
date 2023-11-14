@@ -19,6 +19,12 @@ exports.CONSTANTS = {
 
     RESPONSE_CODE: {
         SUCCESS: 1000,
-        FAIL: 2000
+        FAIL: 2000,
+        FAILED_CASES: 2001
+    },
+
+    MESSAGE: {
+        SAVED_ATTENDANCE: `attendance saved`,
+        CANT_SAVE_ATTENDANCE: `can't save attendance`
     }
 };

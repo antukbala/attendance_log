@@ -2,19 +2,30 @@ const DB = require('../../../libs/dbConnect/mysql/attendanceDB');
 const SQL = require('../sqlQueries');
 const { CONSTANTS } = require('../../services/constants');
 
-async function insertAttendanceLog(values) {
+async function insertAttendanceLogOnAttendanceLogTable(values) {
     try {
         let connection = await DB.dbConnection();
         try {
-            let query = SQL.Attendance.InsertAttendance;
+            let query = SQL.Attendance.InsertAttendanceOnAttendanceLogTable;
             let params = [ values.userId, values.attendanceType, values.workEnvironment, values.logDateTime,
-            values.latitude, values.longitude, values.distance, values.status, values.validity ];
+            values.latitude, values.longitude, values.distance, values.additionalDetails ];
+            const attendance = await DB.doQuery(connection, query, params);
+            return attendance.hasOwnProperty('insertId') ? attendance.insertId : -1;
+        } finally {
+            connection.release();
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
 
-            if (values.additionalDetails !== CONSTANTS.NA) {
-                query = `${query.slice(0, -1)}, additional_details = ?;`;
-                params.push(values.additionalDetails);
-            }
-
+async function insertAttendanceOnAttendanceStatusTable(attendanceId, status) {
+    try {
+        let connection = await DB.dbConnection();
+        try {
+            let query = SQL.Attendance.InsertAttendanceOnAttendanceStatusTable;
+            let params = [ attendanceId, status ];
             const attendance = await DB.doQuery(connection, query, params);
             return attendance.hasOwnProperty('insertId') ? attendance.insertId : -1;
         } finally {
@@ -54,6 +65,7 @@ async function getAttendanceLogByUserIdAndDate(values) {
 }
 
 module.exports = {
-    insertAttendanceLog,
+    insertAttendanceLogOnAttendanceLogTable,
+    insertAttendanceOnAttendanceStatusTable,
     getAttendanceLogByUserIdAndDate
 }

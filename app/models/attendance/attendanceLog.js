@@ -37,16 +37,16 @@ async function insertAttendanceOnAttendanceStatusTable(attendanceId, status) {
     }
 }
 
-async function getAttendanceLogByUserIdAndDate(values) {
+async function getAttendanceLogByUserIdAndDate(userId, date, attendanceType) {
     try {
         let connection = await DB.dbConnection();
         try {
             let query = SQL.Attendance.GetAttendanceLogByUserIdAndDate;
-            let params = [ values.userId, values.date ];
+            let params = [ userId, date ];
 
-            if (values.attendanceType.includes(CONSTANTS.NA) === false) {
+            if (attendanceType.includes(CONSTANTS.NA) === false) {
                 query = `${query.slice(0, -1)} and attendance_type in (`;
-                values.attendanceType.forEach(element => {
+                attendanceType.forEach(element => {
                     query = query + '?,'
                     params.push(element);
                 });

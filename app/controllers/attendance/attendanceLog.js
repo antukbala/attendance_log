@@ -42,7 +42,7 @@ async function getAttendanceLog(req, res) {
     try {
         const { user_id, attendance_type, start_date, end_date, attendance_status } = req.query;
         const values = { userId: user_id, attendanceType: attendance_type.split(','), startDate: start_date, endDate: end_date, attendanceStatus: attendance_status };
-        const attendance = await attendanceModel.getAttendanceLogByUserIdAndDate(values);
+        const attendance = await attendanceModel.getAttendanceLogByUserIdAndDate(values.userId, values.date, values.attendanceType);
         return res.send(attendance);
     } catch (error) {
         console.log(error);

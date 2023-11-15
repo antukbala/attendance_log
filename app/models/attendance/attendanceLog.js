@@ -64,8 +64,26 @@ async function getAttendanceLogByUserIdAndDate(values) {
     }
 }
 
+async function getAttendanceSetupOfOfficeByUserId(userId) {
+    try {
+        let connection = await DB.dbConnection();
+        try {
+            let query = SQL.Attendance.GetAttendanceSetupOfOffice;
+            let params = [ userId, 'active', 'active', 'active', 'active' ];
+            const officeDetails = await DB.doQuery(connection, query, params);
+            return (officeDetails.length === 0) ? null : officeDetails;
+        } finally {
+            connection.release();
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 module.exports = {
     insertAttendanceLogOnAttendanceLogTable,
     insertAttendanceOnAttendanceStatusTable,
-    getAttendanceLogByUserIdAndDate
+    getAttendanceLogByUserIdAndDate,
+    getAttendanceSetupOfOfficeByUserId
 }

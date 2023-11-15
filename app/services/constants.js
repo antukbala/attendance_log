@@ -7,6 +7,11 @@ exports.CONSTANTS = {
         AUTO: 'auto'
     },
 
+    ATTENDANCE_TYPE: {
+        IN: 'in',
+        OUT: 'out'
+    },
+
     STATUS: {
         ACTIVE: 'active',
         INACTIVE: 'inactive'

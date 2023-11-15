@@ -4,6 +4,22 @@ const attendanceModel = require('../../models/attendance/attendanceLog');
 const { CONSTANTS } = require('../../services/constants');
 const Helper = require('../../services/helper');
 
+function getAttendanceStatus(maxAllowedDistance, attendanceTime, maxAllowedTime, userDistance, userTime, attendanceType) {
+    try {
+        let attendanceStatus;
+
+        switch (attendanceType) {
+            case CONSTANTS.ATTENDANCE_TYPE.IN:
+                if (userDistance <= maxAllowedDistance) {
+
+                }
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 async function insertAttendanceLog(req, res) {
     try {
         const { user_id, latitude, longitude, log_date, log_time, attendance_type, work_environment, additional_details } = req.body;
@@ -17,7 +33,11 @@ async function insertAttendanceLog(req, res) {
         }
 
         values.logDateTime = (values.logDate === CONSTANTS.LOG_TYPE.AUTO && values.logTime === CONSTANTS.LOG_TYPE.AUTO) ? `${currentDateTime.date} ${currentDateTime.time}` : `${values.logDate} ${values.logTime}`;
-        values.distance = DISTANCE.calculateDistanceByHaversineFormula(process.env.LAT_OFFICE, process.env.LONG_OFFICE, values.latitude, values.longitude, 'm');
+        
+        const officeDetails = await attendanceModel.getAttendanceSetupOfOfficeByUserId(values.userId);
+        values.distance = DISTANCE.calculateDistanceByHaversineFormula(officeDetails.latitude, officeDetails.longitude, values.latitude, values.longitude, 'm');
+        
+        
         values.validity = (values.distance <= CONSTANTS.MAX_VALID_DISTANCE) ? CONSTANTS.VALIDITY.VALID : CONSTANTS.VALIDITY.INVALID;
         values.status = CONSTANTS.STATUS.ACTIVE;
 

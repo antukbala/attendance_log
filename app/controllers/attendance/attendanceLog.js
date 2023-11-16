@@ -4,16 +4,56 @@ const attendanceModel = require('../../models/attendance/attendanceLog');
 const { CONSTANTS } = require('../../services/constants');
 const Helper = require('../../services/helper');
 
+function timeStringToMilliSeconds(timeString) {
+    try {
+        const [ hours, minutes, seconds ] = timeString.split(':');
+        const milliSeconds = ((Number(hours) * 60 * 60) + (Number(minutes) * 60) + Number(seconds)) * 1000;
+        return milliSeconds;
+    } catch (error) {
+        throw error;
+    }
+}
+
+function getDateTimeFromMilliSeconds(milliSeconds) {
+    try {
+        const dateObject = new Date();
+        dateObject.setHours(0, 0, 0, milliSeconds);
+        return dateObject;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 function getAttendanceStatus(maxAllowedDistance, attendanceTime, maxAllowedTime, userDistance, userTime, attendanceType) {
     try {
-        let attendanceStatus;
+        let attendanceStatus = CONSTANTS.ATTENDANCE_STATUS.PENDING;
+        const attendanceTimeInMilliSeconds = timeStringToMilliSeconds(attendanceTime);
+        const maxAllowedTimeInMilliSeconds = timeStringToMilliSeconds(maxAllowedTime);
+        const userAttendanceTimeInMilliSeconds = timeStringToMilliSeconds(userTime);
+        const userAttendanceTime = getDateTimeFromMilliSeconds(userAttendanceTimeInMilliSeconds);
 
         switch (attendanceType) {
             case CONSTANTS.ATTENDANCE_TYPE.IN:
                 if (userDistance <= maxAllowedDistance) {
-
+                    maxAllowedTime = getDateTimeFromMilliSeconds(attendanceTimeInMilliSeconds + maxAllowedTimeInMilliSeconds);
+                    if (userAttendanceTime <= maxAllowedTime) {
+                        attendanceStatus = CONSTANTS.ATTENDANCE_STATUS.APPROVED;
+                    }
                 }
+                break;
+            
+            case CONSTANTS.ATTENDANCE_TYPE.OUT:
+                if (userDistance <= maxAllowedDistance) {
+                    maxAllowedTime = getDateTimeFromMilliSeconds(attendanceTimeInMilliSeconds - maxAllowedTimeInMilliSeconds);
+                    if (userAttendanceTime >= maxAllowedTime) {
+                        attendanceStatus = CONSTANTS.ATTENDANCE_STATUS.APPROVED;
+                    }
+                }
+                break;
         }
+
+        return attendanceStatus;
     } catch (error) {
         console.log(error);
         throw error;
@@ -36,17 +76,23 @@ async function insertAttendanceLog(req, res) {
         
         const officeDetails = await attendanceModel.getAttendanceSetupOfOfficeByUserId(values.userId);
         values.distance = DISTANCE.calculateDistanceByHaversineFormula(officeDetails.latitude, officeDetails.longitude, values.latitude, values.longitude, 'm');
-        
-        
-        values.validity = (values.distance <= CONSTANTS.MAX_VALID_DISTANCE) ? CONSTANTS.VALIDITY.VALID : CONSTANTS.VALIDITY.INVALID;
-        values.status = CONSTANTS.STATUS.ACTIVE;
-
+        values.attendanceStatus = getAttendanceStatus(
+            officeDetails.allowed_distance,
+            (values.attendanceType === CONSTANTS.ATTENDANCE_TYPE.IN) ? officeDetails.check_in_time : officeDetails.check_out_time,
+            officeDetails.time_flexibility,
+            values.distance,
+            values.logTime,
+            values.attendanceType
+        );
+        values.commentOnAttendanceStatus = (values.attendanceStatus === CONSTANTS.ATTENDANCE_STATUS.APPROVED) ? CONSTANTS.COMMENT_ON_ATTENDANCE_STATUS.AUTO_APPROVED : CONSTANTS.COMMENT_ON_ATTENDANCE_STATUS.DISTANCE_OR_TIME_ISSUE;
+       
         values.attendanceId = await attendanceModel.insertAttendanceLogOnAttendanceLogTable(values);
         if (values.attendanceId === CONSTANTS.NEGETIVE_VALUE) { return res.send(Helper.generateResponse(CONSTANTS.RESPONSE_CODE.FAILED_CASES, CONSTANTS.MESSAGE.CANT_SAVE_ATTENDANCE)); };
-        const attendanceStatusId = await attendanceModel.insertAttendanceOnAttendanceStatusTable(values.attendanceId, 'active');
+        
+        const attendanceStatusId = await attendanceModel.insertAttendanceOnAttendanceStatusTable(values.attendanceId, values.attendanceStatus, values.commentOnAttendanceStatus);
         if (attendanceStatusId === CONSTANTS.NEGETIVE_VALUE) { return res.send(Helper.generateResponse(CONSTANTS.RESPONSE_CODE.FAILED_CASES, CONSTANTS.MESSAGE.CANT_SAVE_ATTENDANCE)); };
 
-        finalOutput = Helper.generateResponse(CONSTANTS.RESPONSE_CODE.SUCCESS, CONSTANTS.MESSAGE.SAVED_ATTENDANCE, 'attendance_id', values.attendanceId);
+        finalOutput = Helper.generateResponse(CONSTANTS.RESPONSE_CODE.SUCCESS, CONSTANTS.MESSAGE.SAVED_ATTENDANCE, ['attendance_id', 'attendance_status'], [values.attendanceId, values.attendanceStatus]);
         if (values.attendanceId === CONSTANTS.NEGETIVE_VALUE) {
             finalOutput = Helper.generateResponse(CONSTANTS.RESPONSE_CODE.FAIL, CONSTANTS.MESSAGE.CANT_SAVE_ATTENDANCE);
         }

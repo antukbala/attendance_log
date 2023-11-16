@@ -20,12 +20,12 @@ async function insertAttendanceLogOnAttendanceLogTable(values) {
     }
 }
 
-async function insertAttendanceOnAttendanceStatusTable(attendanceId, status) {
+async function insertAttendanceOnAttendanceStatusTable(attendanceId, status, comment) {
     try {
         let connection = await DB.dbConnection();
         try {
             let query = SQL.Attendance.InsertAttendanceOnAttendanceStatusTable;
-            let params = [ attendanceId, status ];
+            let params = [ attendanceId, status, comment ];
             const attendance = await DB.doQuery(connection, query, params);
             return attendance.hasOwnProperty('insertId') ? attendance.insertId : -1;
         } finally {
@@ -71,7 +71,7 @@ async function getAttendanceSetupOfOfficeByUserId(userId) {
             let query = SQL.Attendance.GetAttendanceSetupOfOffice;
             let params = [ userId, 'active', 'active', 'active', 'active' ];
             const officeDetails = await DB.doQuery(connection, query, params);
-            return (officeDetails.length === 0) ? null : officeDetails;
+            return (officeDetails.length === 0) ? null : JSON.parse(JSON.stringify(officeDetails[0]));
         } finally {
             connection.release();
         }

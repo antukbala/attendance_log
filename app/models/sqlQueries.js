@@ -4,7 +4,7 @@ const Attendance = {
     log_date_time = ?, latitude = ?, longitude = ?, distance = ?, additional_details = ?;`,
 
     InsertAttendanceOnAttendanceStatusTable:
-    `insert into attendance_log_status set attendance_id = ?, status = ?;`,
+    `insert into attendance_log_status set attendance_id = ?, attendance_status = ?, comment = ?;`,
 
     GetAttendanceLogByUserIdAndDate:
     `select user_id, attendance_type, work_environment, log_date_time, status, validity from attendance_log

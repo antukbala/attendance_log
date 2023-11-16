@@ -12,6 +12,20 @@ exports.CONSTANTS = {
         OUT: 'out'
     },
 
+    ATTENDANCE_STATUS: {
+        PENDING: 'pending',
+        APPROVED: 'approved',
+        REJECTED: 'rejected',
+        CONSIDERATION: 'consideration'
+    },
+
+    COMMENT_ON_ATTENDANCE_STATUS: {
+        AUTO_APPROVED: 'auto approved',
+        DISTANCE_ISSUE: 'distance more than allowed limit',
+        TIME_ISSUE: 'time more than allowed limit',
+        DISTANCE_OR_TIME_ISSUE: 'distance or time more than allowed limit',
+    },
+
     STATUS: {
         ACTIVE: 'active',
         INACTIVE: 'inactive'

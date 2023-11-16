@@ -11,9 +11,9 @@ function calculateDistanceByHaversineFormula(targetLatitude, targetLongitude, us
 	
 	    const a = haversonLatitudeAngle + Math.cos(targetLatitudeInRadian) * Math.cos(userLatitudeInRadian) * haversonLongitudeAngle;
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-	    const distanceInMeter = (unit === 'm') ? RADIUS_OF_EARTH * c * 1000 : RADIUS_OF_EARTH * c;
+	    const distance = (unit === 'm') ? RADIUS_OF_EARTH * c * 1000 : RADIUS_OF_EARTH * c;
 	
-	    return distanceInMeter;
+	    return distance;
     } catch (error) {
         console.log(error);
         throw error;

@@ -1,12 +1,14 @@
-function generateResponse(statusCode, message, additionalField = null, additionalValue = null) {
+function generateResponse(statusCode, message, additionalFields = null, additionalValues = null) {
     try {
 	    let output = {
             response_code: statusCode,
             message: message
         };
 
-        if (additionalField !== null && additionalValue !== null) {
-            output[`${additionalField}`] = additionalValue;
+        if (additionalFields !== null && additionalValues !== null) {
+            for (let i = 0; i < additionalFields.length; i++) {
+                output[`${additionalFields[i]}`] = additionalValues[i];
+            }
         }
 	
 	    return output;

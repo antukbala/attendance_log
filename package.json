@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "local": "NODE_ENV=local node attendanceServer.js"
+    "local": "NODE_ENV=local node attendanceServer.js",
+    "qa": "NODE_ENV=qa node attendanceServer.js"
   },
   "author": "Amit Kumar Bala Antu",
   "license": "ISC",

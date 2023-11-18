@@ -44,10 +44,9 @@ module.exports = {
         "host": ["103.199.168.130"],
         "port": "3716",
         "ref": "origin/version_101",
-        "repo": `git@github.com:antukbala/attendance_log.git`,
+        "repo": `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:antukbala@github.com/attendance_log.git`,
         "path": "/home/custodian/z_attendance_test",
-        'post-deploy': 'npm install &&  pm2 startOrRestart ecosystem.config.js --env qa',
-        "key": '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'
+        'post-deploy': 'npm install &&  pm2 startOrRestart ecosystem.config.js --env qa'
       },
   
       dev: {

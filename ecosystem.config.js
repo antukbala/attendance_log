@@ -46,7 +46,8 @@ module.exports = {
         "ref": "origin/version_101",
         "repo": `git@github.com:antukbala/attendance_log.git`,
         "path": "/home/custodian/z_attendance_test",
-        'post-deploy': 'npm install &&  pm2 startOrRestart ecosystem.config.js --env qa'
+        'post-deploy': 'npm install &&  pm2 startOrRestart ecosystem.config.js --env qa',
+        "key": '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'
       },
   
       dev: {

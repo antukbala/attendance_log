@@ -42,6 +42,7 @@ app.use(function (req, res, next) {
 
 const Routes = require('./app/routes/routes');
 Routes.APP.Attendance.includeRoutes(app); 
+Routes.APP.Login.includeRoutes(app);
 
 const port = process.env.PORT || 3000;
 if (process.env.RUN_MODULE != "MAIN") {

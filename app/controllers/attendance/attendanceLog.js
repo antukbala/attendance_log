@@ -3,6 +3,7 @@ const DISTANCE = require('../../services/distanceCalculation');
 const attendanceModel = require('../../models/attendance/attendanceLog');
 const { CONSTANTS } = require('../../services/constants');
 const Helper = require('../../services/helper');
+const Encryption = require('../../services/encryption');
 
 function timeStringToMilliSeconds(timeString) {
     try {
@@ -116,7 +117,36 @@ async function getAttendanceLog(req, res) {
     }
 }
 
+function encrypt(req, res) {
+    try {
+        let object = req.body.object;
+        object.status = 1000;
+        const encryptedObject = Encryption.encryptWithAES256(object);
+        const values = { object: object, encryptedObject: encryptedObject };
+        return res.send(values);
+    } catch (error) {
+        console.log(error);
+        res.send(error);
+    }
+}
+
+function decrypt(req, res) {
+    try {
+        const object = req.body.payload;
+        // object.status = 1000;
+        let decryptedObject = Encryption.decryptWithAES256(object);
+        decryptedObject = JSON.parse(decryptedObject);
+        const values = { object: object, decryptedObject: decryptedObject };
+        return res.send(values);
+    } catch (error) {
+        console.log(error);
+        res.send(error);
+    }
+}
+
 module.exports = {
     insertAttendanceLog,
-    getAttendanceLog
+    getAttendanceLog,
+    encrypt,
+    decrypt
 }

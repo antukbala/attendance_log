@@ -17,8 +17,18 @@ const Attendance = {
     inner join office_details od on (uc.office_details_id = od.office_details_id)
     inner join office_list ol on (ol.office_id = od.office_id)
     where ud.user_id = ? and ud.status = ? and uc.status = ? and od.status = ? and ol.status = ?;`
-}
+};
+
+const Login = {
+    GetUserDataForLogin:
+    `select ud.user_id, ud.office_id, ud.name, ud.email, ud.mobile, ud.category_id,
+    ud.photo_url, ud.login_id, ud.login_provider, ol.office_name, uc.department, uc.title
+    from user_details ud inner join office_list ol on ud.office_id = ol.office_id
+    inner join user_category uc on ud.category_id = uc.category_id
+    where ud.email = ? and ud.status = ? and ol.status = ? and uc.status = ?;`
+};
 
 module.exports = {
-    Attendance
+    Attendance,
+    Login
 }

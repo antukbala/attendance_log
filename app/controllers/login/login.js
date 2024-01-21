@@ -5,8 +5,28 @@ const { CONSTANTS } = require('../../services/constants');
 const Helper = require('../../services/helper');
 const Encryption = require('../../services/encryption');
 
-async function insertAttendanceLog(req, res) {
+async function generateJWT(req, res) {
     try {
+        // const queryString = req.url.split('?')[1];
+        // const params = new URLSearchParams(queryString);
+        // const user = params.get('user');
+        const user = req.body.user;
+
+        // select ud.user_id, ud.office_id, ud.name, ud.email, ud.mobile, ud.category_id,
+        // ud.photo_url, ol.office_name, uc.department, uc.title
+        // from user_details ud inner join office_list ol on ud.office_id = ol.office_id
+        // inner join user_category uc on ud.category_id = uc.category_id
+        // where ud.email = 'amit.kumar@trucklagbe.com' and ud.status = 'active'
+        // and ol.status = 'active' and uc.status = 'active';
+
+        if (user) {
+            // let user = req.query.user;
+            const data = Encryption.decryptObject(user);
+            return res.send(data);
+        } else {
+            return res.send(Helper.generateResponse(CONSTANTS.RESPONSE_CODE.FAIL, 'No user found'));
+        }
+
         const { user_id, latitude, longitude, log_date, log_time, attendance_type, work_environment, additional_details } = req.body;
         const values = { userId: user_id, latitude, longitude, logDate: log_date, logTime: log_time, attendanceType: attendance_type, workEnvironment: work_environment, additionalDetails: additional_details };
         const currentDateTime = DATE.getCurrentDateTime();
@@ -45,10 +65,11 @@ async function insertAttendanceLog(req, res) {
         return res.send(finalOutput);
     } catch (error) {
         console.log(error);
-        res.send(error);
+        // res.send(error);
+        return res.send(Helper.generateResponse(CONSTANTS.RESPONSE_CODE.FAIL, 'No user found'));
     }
 }
 
 module.exports = {
-    insertAttendanceLog
+    generateJWT
 }

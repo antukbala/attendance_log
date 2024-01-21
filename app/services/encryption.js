@@ -34,7 +34,17 @@ function  decryptWithAES256(cipherText) {
     }
 }
 
+function decryptObject(cipherText) {
+    try {
+        const object = decryptWithAES256(cipherText);
+        return JSON.parse(object);
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports = {
     encryptWithAES256,
-    decryptWithAES256
+    decryptWithAES256,
+    decryptObject
 };

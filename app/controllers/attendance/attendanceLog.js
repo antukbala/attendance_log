@@ -120,7 +120,6 @@ async function getAttendanceLog(req, res) {
 function encrypt(req, res) {
     try {
         let object = req.body.object;
-        object.status = 1000;
         const encryptedObject = Encryption.encryptWithAES256(object);
         const values = { object: object, encryptedObject: encryptedObject };
         return res.send(values);

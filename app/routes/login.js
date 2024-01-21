@@ -8,8 +8,8 @@ function includeRoutes(app) {
             return res.send('project is running');
         });
     
-        app.get(subRoute + '/jwt', [
-            login.insertAttendanceLog
+        app.post(subRoute + '/jwt', [
+            login.generateJWT
         ]);
     } catch (error) {
         console.log(error);

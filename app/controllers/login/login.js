@@ -4,33 +4,36 @@ const loginModel = require('../../models/login/login');
 const { CONSTANTS } = require('../../services/constants');
 const Helper = require('../../services/helper');
 const Encryption = require('../../services/encryption');
+const JWT = require('jsonwebtoken');
 
-
-function generateJWT(user) {
+function generateJWT(userDetails) {
     try {
-        const payload = {
-          userId: user.id,
-          username: user.username,
-          // Add any additional claims or information you need
-        };
-      
+        // const payload = { ...userDetails };
         const options = {
-          expiresIn: '1h'
+          expiresIn: '3h',
+        //   algorithm: 'RS256'
         };
-      
-        return jwt.sign(payload, secretKey, options);
+        return JWT.sign(userDetails, process.env.JADU_MONTRO, options);
     } catch (error) {
         throw error;
     }
-  };
+}
 
-async function generateJWT(req, res) {
+// const testData = {
+//     name: 'amit kumar bala antu',
+//     mobile: '01685273709'
+// };
+// console.log(generateJWT(testData));
+
+async function generateAccessToken(req, res) {
     try {
-        const user = req.body.user;
         let values = {};
+        const payload = req.body.user;
+        // TODO: PAYLOAD VALIDATION
+        
 
-        if (user) {
-            const data = Encryption.decryptObject(user);
+        if (payload) {
+            const data = Encryption.decryptObject(payload);
             values.email = data.email;
             
             const userData = await loginModel.getUserDataForLogin(values.email);
@@ -38,8 +41,21 @@ async function generateJWT(req, res) {
                 return res.send(Helper.generateResponse(CONSTANTS.RESPONSE_CODE.FAIL, 'No user found'));
             }
 
+            values.userId = userData.user_id;
+            values.officeId = userData.office_id;
+            values.name = userData.name;
+            values.mobile = userData.mobile;
+            values.categoryId = userData.category_id;
+            // values.photoUrl = userData.photo_url;
+            // values.loginId = userData.login_id;
+            // values.loginProvider = userData.login_provider;
+            values.officeName = userData.office_name;
+            values.department = userData.department;
+            values.title = userData.title;
 
-            return res.send(userData);
+            const accessToken = generateJWT(values);
+
+            return res.send({ status: 1000, access_token: accessToken });
         } else {
             return res.send(Helper.generateResponse(CONSTANTS.RESPONSE_CODE.FAIL, 'No user found'));
         }
@@ -83,10 +99,10 @@ async function generateJWT(req, res) {
     } catch (error) {
         console.log(error);
         // res.send(error);
-        return res.send(Helper.generateResponse(CONSTANTS.RESPONSE_CODE.FAIL, 'No user found'));
+        return res.send(Helper.generateResponse(CONSTANTS.RESPONSE_CODE.FAIL, 'No user found '+error.message));
     }
 }
 
 module.exports = {
-    generateJWT
+    generateAccessToken
 }

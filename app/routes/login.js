@@ -9,7 +9,7 @@ function includeRoutes(app) {
         });
     
         app.post(subRoute + '/jwt', [
-            login.generateJWT
+            login.generateAccessToken
         ]);
     } catch (error) {
         console.log(error);

@@ -54,8 +54,8 @@ module.exports = {
         "host": ["103.199.168.135"],
         "port": "53220",
         "ref": "origin/version_101",
-        "repo": `https://gitlab+deploy-token-875568:H9ZP8PzFZzVRrz8quUr7@devops.trucklagbe.com/tl-back/tl_quickbook.git`,
-        "path": "/home/TL/tl_quickbook",
+        "repo": `git@github.com:antukbala/attendance_log.git`,
+        "path": "/home/test/z_attendance_test",
         'post-deploy': 'npm install &&  pm2 startOrRestart ecosystem.config.js --env dev'
       }
     }

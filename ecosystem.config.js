@@ -55,7 +55,7 @@ module.exports = {
         "port": "53220",
         "ref": "origin/version_101",
         "repo": `git@github.com:antukbala/attendance_log.git`,
-        "path": "/home/test/z_attendance_test",
+        "path": "/home/shepherd/z_attendance_test",
         'post-deploy': 'npm install &&  pm2 startOrRestart ecosystem.config.js --env dev'
       }
     }

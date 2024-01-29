@@ -108,9 +108,12 @@ async function insertAttendanceLog(req, res) {
 async function getAttendanceLog(req, res) {
     try {
         const { user_id, attendance_type, start_date, end_date, attendance_status } = req.query;
-        const values = { userId: user_id, attendanceType: attendance_type.split(','), startDate: start_date, endDate: end_date, attendanceStatus: attendance_status };
-        const attendance = await attendanceModel.getAttendanceLogByUserIdAndDate(values.userId, values.date, values.attendanceType);
-        return res.send(attendance);
+        const values = { userId: user_id, attendanceType: attendance_type.split(','), startDate: start_date, endDate: end_date, attendanceStatus: attendance_status.split(',') };
+        const attendance = await attendanceModel.getAttendanceLogByUserIdAndDate(values.userId, values.startDate, values.endDate, values.attendanceType, values.attendanceStatus);
+        if (attendance === null) {
+            return res.send({ status: 1000, message: 'no attendace found' });
+        }
+        return res.send({ status: 1000, attendance_list: attendance });
     } catch (error) {
         console.log(error);
         res.send(error);

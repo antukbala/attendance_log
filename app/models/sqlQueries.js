@@ -7,8 +7,9 @@ const Attendance = {
     `insert into attendance_log_status set attendance_id = ?, attendance_status = ?, comment = ?;`,
 
     GetAttendanceLogByUserIdAndDate:
-    `select user_id, attendance_type, work_environment, log_date_time, status, validity from attendance_log
-    where user_id = ? and DATE(log_date_time) = ? and status = ?;`,
+    `select user_id, attendance_id, attendance_type, work_environment, log_date_time, status, latitude,
+    longitude, platform, additional_details, created_on, updated_on from attendance_log where user_id = ?
+    and DATE(log_date_time) >= ? and DATE(log_date_time) <= ? and status in (?) and attendance_type in (?);`,
 
     GetAttendanceSetupOfOffice:
     `select ud.office_id, ud.category_id, uc.office_details_id, od.latitude, od.longitude,

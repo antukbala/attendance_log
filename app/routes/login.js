@@ -1,13 +1,14 @@
 const login = require('../controllers/login/login');
-const subRoute = '/login';
 
 function includeRoutes(app) {
     try {
-        app.get(subRoute + '/test', (req, res) => {
+        const SUB_ROUTES = '/login';
+
+        app.get(SUB_ROUTES + '/test', (req, res) => {
             return res.send('project is running on login routes');
         });
     
-        app.post(subRoute + '/jwt', [
+        app.post(SUB_ROUTES + '/jwt', [
             login.generateAccessToken
         ]);
     } catch (error) {

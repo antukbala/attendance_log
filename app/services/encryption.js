@@ -28,7 +28,7 @@ function  decryptWithAES256(cipherText) {
           keySize: 16
         }).toString(CryptoJS.enc.Utf8);
      
-        return decryptedValue;
+        return JSON.parse(decryptedValue);
     } catch (error) {
         throw error;
     }

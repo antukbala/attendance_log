@@ -29,7 +29,17 @@ const Login = {
     where ud.email = ? and ud.status = ? and ol.status = ? and uc.status = ?;`
 };
 
+const Office = {
+    InsertOfficeNameOnOfficeList:
+    `insert into office_list set office_name = ?, status = ?;`,
+
+    InsertOfficeDetailsOnOfficeDetails:
+    `insert into office_details set office_id = ?, address = ?, latitude = ?, longitude = ?, allowed_distance = ?, checkin_time = ?,
+    checkout_time = ?`,
+};
+
 module.exports = {
     Attendance,
-    Login
+    Login,
+    Office
 }

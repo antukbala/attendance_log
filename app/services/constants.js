@@ -1,4 +1,13 @@
 exports.CONSTANTS = {
+    FINAL_RESPONSE: {
+        MAKE_CUSTOM_RESPONSE: (keys, values) => {
+            let response = {};
+            for (let i = 0; i < keys.length; i++) {
+                response[keys[i]] = values[i]
+            }
+            return response;
+        }
+    },
     MAX_VALID_DISTANCE: 100,
     NEGETIVE_VALUE: -1,
     NA: 'n/a',

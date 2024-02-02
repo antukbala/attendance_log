@@ -34,8 +34,8 @@ const Office = {
     `insert into office_list set office_name = ?, status = ?;`,
 
     InsertOfficeDetailsOnOfficeDetails:
-    `insert into office_details set office_id = ?, address = ?, latitude = ?, longitude = ?, allowed_distance = ?, checkin_time = ?,
-    checkout_time = ?`,
+    `insert into office_details set office_id = ?, office_branch_name = ?, address = ?, latitude = ?, longitude = ?,
+    allowed_distance = ?, checkin_time = ?, checkout_time = ?, time_flexibility = ?, status = ?;`,
 };
 
 module.exports = {

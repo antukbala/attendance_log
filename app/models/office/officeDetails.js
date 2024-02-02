@@ -18,12 +18,13 @@ async function inertOfficeOnOfficeList(officeName) {
     }
 }
 
-async function insertOfficeDetails(officeId, address, latitude, longitude, allowedDistance, checkinTime, checkoutTime) {
+async function insertOfficeOnOfficeDetails(args) {
     try {
         let connection = await DB.dbConnection();
         try {
             let query = SQL.Office.InsertOfficeDetailsOnOfficeDetails;
-            let params = [ officeId, address, latitude, longitude, allowedDistance, checkinTime, checkoutTime ];
+            let params = [ args.officeId, args.officeBranchName, args.address, args.latitude, args.longitude,
+                args.allowedDistance, args.checkinTime, args.checkoutTime, args.timeFelxibility, 'active' ];
             const office = await DB.doQuery(connection, query, params);
             return office.hasOwnProperty('insertId') ? office.insertId : -1;
         } finally {
@@ -54,5 +55,5 @@ async function insertOfficeDetails(officeId, address, latitude, longitude, allow
 
 module.exports = {
     inertOfficeOnOfficeList,
-    insertOfficeDetails
+    insertOfficeOnOfficeDetails
 }

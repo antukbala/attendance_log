@@ -35,20 +35,32 @@ async function addOffice(req, res) {
             delete office.super_admin;
         });
 
-        return res.send({t: values})
+        // return res.send({t: values});
 
         const officeId = await officeDetailsModel.inertOfficeOnOfficeList(values.officeName);
-        if ([-1, undefined, null].includes(officeId)) {
+        if ([0, -1, undefined, null].includes(officeId)) {
             return res.send(CONSTANTS.FINAL_RESPONSE.MAKE_CUSTOM_RESPONSE(['message'], ['office not inserted']));
         }
 
         values.officeId = officeId;
-        values.officeDetailsId = [];
+
+        // const officeDetailsIds = await officeDetailsModel.inertOfficeOnOfficeList(values.officeId);
+        let officeAddingDetails = [];
         for (let i = 0; i < values.officeDetails.length; i++) {
+            let newOfficeAddingDetails = {};
             const officeDetails = values.officeDetails[i];
-            const officeDetailsId = await officeDetailsModel.insertOfficeDetails(
-                values.officeId, officeDetails.address, 
-            );
+            const paramsForOfficeDetailsAdd = { officeId: values.officeId, officeBranchName: officeDetails.officeBranchName, address: officeDetails.address,
+                latitude: officeDetails.latitude, longitude: officeDetails.longitude, allowedDistance: officeDetails.allowedDistance, checkinTime: officeDetails.checkinTime,
+                checkoutTime: officeDetails.checkoutTime, timeFelxibility: officeDetails.timeFelxibility };
+            const officeDetailsId = await officeDetailsModel.insertOfficeOnOfficeDetails(paramsForOfficeDetailsAdd);
+
+            if ([0, -1, undefined, null].includes(officeDetailsId)) {
+                newOfficeAddingDetails.message = `failed to insert office details`;
+                newOfficeAddingDetails.office_id = officeId;
+                newOfficeAddingDetails.office_branch_name = officeDetails.officeBranchName;
+                officeAddingDetails.push(newOfficeAddingDetails);
+                continue;
+            }
         };
 
         return res.send(values);

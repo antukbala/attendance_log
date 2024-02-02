@@ -35,11 +35,17 @@ const Office = {
 
     InsertOfficeDetailsOnOfficeDetails:
     `insert into office_details set office_id = ?, office_branch_name = ?, address = ?, latitude = ?, longitude = ?,
-    allowed_distance = ?, checkin_time = ?, checkout_time = ?, time_flexibility = ?, status = ?;`,
+    allowed_distance = ?, checkin_time = ?, checkout_time = ?, time_flexibility = ?, status = ?;`
+};
+
+const SuperAdmin = {
+    InsertSuperAdminForOffice:
+    `insert into super_admins set office_id = ?, office_details_id = ?, name = ?, phone = ?, status = ?;`
 };
 
 module.exports = {
     Attendance,
     Login,
-    Office
+    Office,
+    SuperAdmin
 }

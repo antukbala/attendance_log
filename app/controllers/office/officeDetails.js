@@ -1,6 +1,7 @@
 const DATE = require('../../services/dateTime');
 const DISTANCE = require('../../services/distanceCalculation');
 const officeDetailsModel = require('../../models/office/officeDetails');
+const superAdminModel = require('../../models/office/superAdmin');
 const { CONSTANTS } = require('../../services/constants');
 const Helper = require('../../services/helper');
 const Encryption = require('../../services/encryption');
@@ -45,7 +46,7 @@ async function addOffice(req, res) {
         values.officeId = officeId;
 
         // const officeDetailsIds = await officeDetailsModel.inertOfficeOnOfficeList(values.officeId);
-        let officeAddingDetails = [];
+        let officeAddingDetails = [], superAdminAddingDetails = [];
         for (let i = 0; i < values.officeDetails.length; i++) {
             let newOfficeAddingDetails = {};
             const officeDetails = values.officeDetails[i];
@@ -60,6 +61,27 @@ async function addOffice(req, res) {
                 newOfficeAddingDetails.office_branch_name = officeDetails.officeBranchName;
                 officeAddingDetails.push(newOfficeAddingDetails);
                 continue;
+            }
+
+            newOfficeAddingDetails.office_details_id = officeDetailsId;
+
+            if (officeDetails.hasOwnProperty('superAdmin') && officeDetails.superAdmin.length > 0) {
+                for (let j = 0; j < officeDetails.superAdmin.length; j++) {
+                    const superAdminDetails = officeDetails[j].superAdmin;
+                    let newSuperAdminAddingDetails = {};
+                    const superAdminId = await superAdminModel.insertSuperAdminForOffice(officeId, officeDetailsId, superAdminDetails.name, superAdminDetails.phone);
+
+                    if ([0, -1, undefined, null].includes(officeDetailsId)) {
+                        newSuperAdminAddingDetails.message = `failed to insert super admin details`;
+                        newSuperAdminAddingDetails.super_admin_name = superAdminDetails.name;
+                        superAdminAddingDetails.push(newSuperAdminAddingDetails);
+                        continue;
+                    }
+
+                    newSuperAdminAddingDetails.super_admin_id = superAdminId;
+                    newSuperAdminAddingDetails.super_admin_name = superAdminDetails.name;
+                    superAdminAddingDetails.push(newSuperAdminAddingDetails);
+                }
             }
         };
 

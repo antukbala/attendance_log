@@ -17,6 +17,12 @@ async function addOffice(req, res) {
             office.checkoutTime = office.check_out_time;
             office.timeFlexibility = office.time_flexibility;
             office.superAdmin = office.super_admin;
+            office.departments.forEach((department) => {
+                department.departmentName = department.department_name;
+                department.jobTitles = department.job_titles;
+                delete department.department_name;
+                delete department.job_titles;
+            })
 
             delete office.allowed_distance;
             delete office.check_in_time;
@@ -24,6 +30,8 @@ async function addOffice(req, res) {
             delete office.time_flexibility;
             delete office.super_admin;
         });
+
+        return res.send({t: values})
 
         const officeId = await officeDetailsModel.inertOfficeOnOfficeList(values.officeName);
         if ([-1, undefined, null].includes(officeId)) {
@@ -37,7 +45,7 @@ async function addOffice(req, res) {
             const officeDetailsId = await officeDetailsModel.insertOfficeDetails(
                 values.officeId, officeDetails.address, 
             );
-        });
+        };
 
         return res.send(values);
         // const { user_id, latitude, longitude, log_date, log_time, attendance_type, work_environment, additional_details } = req.body;

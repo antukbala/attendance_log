@@ -12,21 +12,25 @@ async function addOffice(req, res) {
         values.officeName = body.office_name;
         values.officeDetails = body.office_details;
         values.officeDetails.forEach((office) => {
+            office.officeBranchName = office.office_branch_name;
             office.allowedDistance = office.allowed_distance;
-            office.checkinTime = office.check_in_time;
-            office.checkoutTime = office.check_out_time;
+            office.checkinTime = office.checkin_time;
+            office.checkoutTime = office.checkout_time;
             office.timeFlexibility = office.time_flexibility;
             office.superAdmin = office.super_admin;
-            office.departments.forEach((department) => {
-                department.departmentName = department.department_name;
-                department.jobTitles = department.job_titles;
-                delete department.department_name;
-                delete department.job_titles;
-            })
+            
+            if (office.hasOwnProperty('departments') && office.departments.length !== 0) {
+                office.departments.forEach((department) => {
+                    department.departmentName = department.department_name;
+                    department.jobTitles = department.job_titles;
+                    delete department.department_name;
+                    delete department.job_titles;
+                });
+            }
 
             delete office.allowed_distance;
-            delete office.check_in_time;
-            delete office.check_out_time;
+            delete office.checkin_time;
+            delete office.checkout_time;
             delete office.time_flexibility;
             delete office.super_admin;
         });

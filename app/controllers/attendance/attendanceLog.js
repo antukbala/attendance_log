@@ -124,7 +124,7 @@ function encrypt(req, res) {
     try {
         let object = req.body.object;
         const encryptedObject = Encryption.encryptWithAES256(object);
-        const values = { object: object, encryptedObject: encryptedObject };
+        const values = { object: object, encrypted_object: encryptedObject };
         return res.send(values);
     } catch (error) {
         console.log(error);
@@ -137,8 +137,8 @@ function decrypt(req, res) {
         const object = req.body.payload;
         // object.status = 1000;
         let decryptedObject = Encryption.decryptWithAES256(object);
-        decryptedObject = JSON.parse(decryptedObject);
-        const values = { object: object, decryptedObject: decryptedObject };
+        // decryptedObject = JSON.parse(decryptedObject);
+        const values = { object: object, decrypted_object: decryptedObject };
         return res.send(values);
     } catch (error) {
         console.log(error);

@@ -43,9 +43,21 @@ const SuperAdmin = {
     `insert into super_admins set office_id = ?, office_details_id = ?, name = ?, phone = ?, status = ?;`
 };
 
+const OfficeDepartment = {
+    InsertDepartmentDetails:
+    `insert into user_departments set office_id = ?, office_details_id = ?, department_name = ?, status = ?;`
+};
+
+const JobRole = {
+    InsertJobRoleOfDepartment:
+    `insert into user_job_roles set department_id = ?, job_title = ?, job_description = ?, status = ?;`
+};
+
 module.exports = {
     Attendance,
     Login,
     Office,
-    SuperAdmin
+    SuperAdmin,
+    OfficeDepartment,
+    JobRole
 }

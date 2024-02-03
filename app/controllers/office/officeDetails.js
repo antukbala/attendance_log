@@ -143,8 +143,10 @@ async function addOffice(req, res) {
 
         const finalOutput = {
             status: 1000,
-            office_id: values.officeId,
-            office_details: officeAddingDetails
+            data: {
+                office_id: values.officeId,
+                office_details: officeAddingDetails
+            }
         };
 
         return res.json(finalOutput);

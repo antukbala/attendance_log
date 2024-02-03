@@ -145,6 +145,11 @@ async function addOffice(req, res) {
             status: 1000,
             data: {
                 office_id: values.officeId,
+                // super_admin: {
+                //     name: values.superAdmin.name,
+                //     id: values.superAdmin.id,
+                //     type: 'admin'
+                // },
                 office_details: officeAddingDetails
             }
         };

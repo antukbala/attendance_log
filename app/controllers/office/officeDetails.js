@@ -67,6 +67,7 @@ async function addOffice(req, res) {
             }
 
             newOfficeAddingDetails.office_details_id = officeDetailsId;
+            newOfficeAddingDetails.office_branch_name = officeDetails.officeBranchName;
 
             if (officeDetails.hasOwnProperty('superAdmin') && officeDetails.superAdmin.length > 0) {
                 let superAdminAddingDetails = [];
@@ -74,7 +75,7 @@ async function addOffice(req, res) {
                 for (let j = 0; j < officeDetails.superAdmin.length; j++) {
                     const superAdminDetails = officeDetails.superAdmin[j];
                     let newSuperAdminAddingDetails = {};
-                    const superAdminId = await superAdminModel.insertSuperAdminForOffice(officeId, officeDetailsId, superAdminDetails.name, superAdminDetails.phone);
+                    const superAdminId = await superAdminModel.insertSuperAdminForOffice(officeId, officeDetailsId, superAdminDetails.name, superAdminDetails.phone, superAdminDetails.email);
 
                     if ([0, -1, undefined, null].includes(officeDetailsId)) {
                         newSuperAdminAddingDetails.message = `failed to insert super admin details`;
@@ -142,10 +143,11 @@ async function addOffice(req, res) {
 
         const finalOutput = {
             status: 1000,
+            office_id: values.officeId,
             office_details: officeAddingDetails
         };
 
-        return res.send(finalOutput);
+        return res.json(finalOutput);
         // const { user_id, latitude, longitude, log_date, log_time, attendance_type, work_environment, additional_details } = req.body;
         // const values = { userId: user_id, latitude, longitude, logDate: log_date, logTime: log_time, attendanceType: attendance_type, workEnvironment: work_environment, additionalDetails: additional_details };
         // const currentDateTime = DATE.getCurrentDateTime();

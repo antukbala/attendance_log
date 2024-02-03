@@ -1,12 +1,12 @@
 const DB = require('../../../libs/dbConnect/mysql/attendanceDB');
 const SQL = require('../sqlQueries');
 
-async function insertSuperAdminForOffice(officeId, officeDetailsId, name, phone) {
+async function insertSuperAdminForOffice(officeId, officeDetailsId, name, phone, email) {
     try {
         let connection = await DB.dbConnection();
         try {
             let query = SQL.SuperAdmin.InsertSuperAdminForOffice;
-            let params = [ officeId, officeDetailsId, name, phone, 'active' ];
+            let params = [ officeId, officeDetailsId, name, phone, email, 'active' ];
             const superAdmin = await DB.doQuery(connection, query, params);
             return superAdmin.hasOwnProperty('insertId') ? superAdmin.insertId : -1;
         } finally {

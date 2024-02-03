@@ -40,7 +40,7 @@ const Office = {
 
 const SuperAdmin = {
     InsertSuperAdminForOffice:
-    `insert into super_admins set office_id = ?, office_details_id = ?, name = ?, phone = ?, status = ?;`
+    `insert into super_admins set office_id = ?, office_details_id = ?, name = ?, phone = ?, email = ?, status = ?;`
 };
 
 const OfficeDepartment = {

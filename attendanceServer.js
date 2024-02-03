@@ -40,6 +40,9 @@ app.use(function (req, res, next) {
     }
 });
 
+const payloadMiddleware = require('./app/middlewares/payloadDecryption');
+app.use(payloadMiddleware.decryptPayload);
+
 const Routes = require('./app/routes/routes');
 Routes.APP.Attendance.includeRoutes(app); 
 Routes.APP.Login.includeRoutes(app);

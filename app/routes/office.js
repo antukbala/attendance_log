@@ -1,5 +1,4 @@
 const officeDetails = require('../controllers/office/officeDetails');
-const payloadMiddleware = require('../middlewares/payloadDecryption');
 
 function includeRoutes(app) {
     try {
@@ -10,7 +9,7 @@ function includeRoutes(app) {
         });
     
         app.post(SUB_ROUTE + '/add-office', [
-            payloadMiddleware.decryptPayload,
+            // payloadMiddleware.decryptPayload,
             officeDetails.addOffice
         ]);
     } catch (error) {

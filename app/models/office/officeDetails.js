@@ -24,7 +24,7 @@ async function insertOfficeOnOfficeDetails(args) {
         try {
             let query = SQL.Office.InsertOfficeDetailsOnOfficeDetails;
             let params = [ args.officeId, args.officeBranchName, args.address, args.latitude, args.longitude,
-                args.allowedDistance, args.checkinTime, args.checkoutTime, args.timeFelxibility, 'active' ];
+                args.allowedDistance, args.checkinTime, args.checkoutTime, args.timeFlexibility, 'active' ];
             const office = await DB.doQuery(connection, query, params);
             return office.hasOwnProperty('insertId') ? office.insertId : -1;
         } finally {

@@ -31,6 +31,7 @@ async function addOffice(req, res) {
                 });
             }
 
+            delete office.office_branch_name;
             delete office.allowed_distance;
             delete office.checkin_time;
             delete office.checkout_time;
@@ -48,13 +49,13 @@ async function addOffice(req, res) {
         values.officeId = officeId;
 
         // const officeDetailsIds = await officeDetailsModel.inertOfficeOnOfficeList(values.officeId);
-        let officeAddingDetails = [], superAdminAddingDetails = [], departmentAddingDetails = [];
+        let officeAddingDetails = [];
         for (let i = 0; i < values.officeDetails.length; i++) {
             let newOfficeAddingDetails = {};
             const officeDetails = values.officeDetails[i];
             const paramsForOfficeDetailsAdd = { officeId: values.officeId, officeBranchName: officeDetails.officeBranchName, address: officeDetails.address,
                 latitude: officeDetails.latitude, longitude: officeDetails.longitude, allowedDistance: officeDetails.allowedDistance, checkinTime: officeDetails.checkinTime,
-                checkoutTime: officeDetails.checkoutTime, timeFelxibility: officeDetails.timeFelxibility };
+                checkoutTime: officeDetails.checkoutTime, timeFlexibility: officeDetails.timeFlexibility };
             const officeDetailsId = await officeDetailsModel.insertOfficeOnOfficeDetails(paramsForOfficeDetailsAdd);
 
             if ([0, -1, undefined, null].includes(officeDetailsId)) {
@@ -68,6 +69,8 @@ async function addOffice(req, res) {
             newOfficeAddingDetails.office_details_id = officeDetailsId;
 
             if (officeDetails.hasOwnProperty('superAdmin') && officeDetails.superAdmin.length > 0) {
+                let superAdminAddingDetails = [];
+
                 for (let j = 0; j < officeDetails.superAdmin.length; j++) {
                     const superAdminDetails = officeDetails.superAdmin[j];
                     let newSuperAdminAddingDetails = {};
@@ -84,12 +87,16 @@ async function addOffice(req, res) {
                     newSuperAdminAddingDetails.super_admin_name = superAdminDetails.name;
                     superAdminAddingDetails.push(newSuperAdminAddingDetails);
                 }
+
+                if (superAdminAddingDetails.length > 0) newOfficeAddingDetails.super_admin = superAdminAddingDetails;
             }
 
             if (officeDetails.hasOwnProperty('departments') && officeDetails.departments.length > 0) {
+                let departmentAddingDetails = [];
+
                 for (let k = 0; k < officeDetails.departments.length; k++) {
-                    const departmentDetails = officeDetails.superAdmin[k];
-                    let newDepartmentAddingDetails = {}, jobTitleAddingDetails = [];
+                    const departmentDetails = officeDetails.departments[k];
+                    let newDepartmentAddingDetails = {};
                     const departmentId = await officeDepartmentModel.insertDepartmentOfOffice(officeId, officeDetailsId, departmentDetails.departmentName);
 
                     if ([0, -1, undefined, null].includes(departmentId)) {
@@ -103,8 +110,10 @@ async function addOffice(req, res) {
                     newDepartmentAddingDetails.department_name = departmentDetails.departmentName;
 
                     if (departmentDetails.hasOwnProperty('jobTitles') && departmentDetails.jobTitles.length > 0) {
+                        let jobTitleAddingDetails = [];
+
                         for (let x = 0; x < departmentDetails.jobTitles.length; x++) {
-                            const jobTitle = departmentDetails.jobTitls[x];
+                            const jobTitle = departmentDetails.jobTitles[x];
                             let newJobTitleAddingDetails = {};
                             const jobRoleId = await jobRoleModel.insertJobRoleOfDepartment(departmentId, jobTitle, null);
 
@@ -119,22 +128,22 @@ async function addOffice(req, res) {
                             newJobTitleAddingDetails.job_role_id = jobRoleId;
                             jobTitleAddingDetails.push(newJobTitleAddingDetails);
                         }
+
+                        if (jobTitleAddingDetails.length > 0) newDepartmentAddingDetails.job_roles = jobTitleAddingDetails;
                     }
 
-                    if (jobTitleAddingDetails.length > 0) {
-                        newDepartmentAddingDetails.job_roles = jobTitleAddingDetails;
-                    }
                     departmentAddingDetails.push(newDepartmentAddingDetails);
                 }
+                if (departmentAddingDetails.length > 0) newOfficeAddingDetails.departments = departmentAddingDetails;
             }
-        };
+
+            officeAddingDetails.push(newOfficeAddingDetails);
+        }
 
         const finalOutput = {
             status: 1000,
-            office: officeAddingDetails,
-            super_admin: superAdminAddingDetails,
-            department: departmentAddingDetails
-        }
+            office_details: officeAddingDetails
+        };
 
         return res.send(finalOutput);
         // const { user_id, latitude, longitude, log_date, log_time, attendance_type, work_environment, additional_details } = req.body;

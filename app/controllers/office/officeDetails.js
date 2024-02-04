@@ -13,6 +13,7 @@ async function addOffice(req, res) {
         const body = req.body;
         let values = {};
         values.officeName = body.office_name;
+        values.superAdmin = body.super_admin;
         values.officeDetails = body.office_details;
         values.officeDetails.forEach((office) => {
             office.officeBranchName = office.office_branch_name;
@@ -20,7 +21,6 @@ async function addOffice(req, res) {
             office.checkinTime = office.checkin_time;
             office.checkoutTime = office.checkout_time;
             office.timeFlexibility = office.time_flexibility;
-            office.superAdmin = office.super_admin;
             
             if (office.hasOwnProperty('departments') && office.departments.length !== 0) {
                 office.departments.forEach((department) => {
@@ -36,10 +36,7 @@ async function addOffice(req, res) {
             delete office.checkin_time;
             delete office.checkout_time;
             delete office.time_flexibility;
-            delete office.super_admin;
         });
-
-        // return res.send({t: values});
 
         const officeId = await officeDetailsModel.inertOfficeOnOfficeList(values.officeName);
         if ([0, -1, undefined, null].includes(officeId)) {
@@ -47,8 +44,21 @@ async function addOffice(req, res) {
         }
 
         values.officeId = officeId;
+        const paramsForSuperAdminAdd = {
+            officeId: values.officeId, name: values.superAdmin.name, phone: values.superAdmin.phone,
+            email: values.superAdmin.email, adminType: values.superAdmin.type
+        };
+        const superAdminId = await superAdminModel.insertSuperAdminForOffice(paramsForSuperAdminAdd);
 
-        // const officeDetailsIds = await officeDetailsModel.inertOfficeOnOfficeList(values.officeId);
+        if ([0, -1, undefined, null].includes(superAdminId)) {
+            values.superAdmin.id = null,
+            values.superAdmin.name,
+            values.superAdmin.email,
+            values.superAdmin.type
+            return res.send(CONSTANTS.FINAL_RESPONSE.MAKE_CUSTOM_RESPONSE(['message'], ['office not inserted']));
+        }
+        values.superAdmin.id = superAdminId;
+
         let officeAddingDetails = [];
         for (let i = 0; i < values.officeDetails.length; i++) {
             let newOfficeAddingDetails = {};
@@ -68,29 +78,6 @@ async function addOffice(req, res) {
 
             newOfficeAddingDetails.office_details_id = officeDetailsId;
             newOfficeAddingDetails.office_branch_name = officeDetails.officeBranchName;
-
-            if (officeDetails.hasOwnProperty('superAdmin') && officeDetails.superAdmin.length > 0) {
-                let superAdminAddingDetails = [];
-
-                for (let j = 0; j < officeDetails.superAdmin.length; j++) {
-                    const superAdminDetails = officeDetails.superAdmin[j];
-                    let newSuperAdminAddingDetails = {};
-                    const superAdminId = await superAdminModel.insertSuperAdminForOffice(officeId, officeDetailsId, superAdminDetails.name, superAdminDetails.phone, superAdminDetails.email);
-
-                    if ([0, -1, undefined, null].includes(officeDetailsId)) {
-                        newSuperAdminAddingDetails.message = `failed to insert super admin details`;
-                        newSuperAdminAddingDetails.super_admin_name = superAdminDetails.name;
-                        superAdminAddingDetails.push(newSuperAdminAddingDetails);
-                        continue;
-                    }
-
-                    newSuperAdminAddingDetails.super_admin_id = superAdminId;
-                    newSuperAdminAddingDetails.super_admin_name = superAdminDetails.name;
-                    superAdminAddingDetails.push(newSuperAdminAddingDetails);
-                }
-
-                if (superAdminAddingDetails.length > 0) newOfficeAddingDetails.super_admin = superAdminAddingDetails;
-            }
 
             if (officeDetails.hasOwnProperty('departments') && officeDetails.departments.length > 0) {
                 let departmentAddingDetails = [];
@@ -145,11 +132,12 @@ async function addOffice(req, res) {
             status: 1000,
             data: {
                 office_id: values.officeId,
-                // super_admin: {
-                //     name: values.superAdmin.name,
-                //     id: values.superAdmin.id,
-                //     type: 'admin'
-                // },
+                super_admin: {
+                    id: values.superAdmin.id,
+                    name: values.superAdmin.name,
+                    email: values.superAdmin.email,
+                    type: values.superAdmin.type
+                },
                 office_details: officeAddingDetails
             }
         };

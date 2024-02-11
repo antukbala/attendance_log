@@ -1,6 +1,23 @@
 const DB = require('../../../libs/dbConnect/mysql/attendanceDB');
 const SQL = require('../sqlQueries');
 
+async function inertCompanyOnOfficeList(officeName) {
+    try {
+        let connection = await DB.dbConnection();
+        try {
+            let query = SQL.Office.InsertOfficeNameOnOfficeList;
+            let params = [ officeName, 'active' ];
+            const office = await DB.doQuery(connection, query, params);
+            return office.hasOwnProperty('insertId') ? office.insertId : -1;
+        } finally {
+            connection.release();
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 async function inertOfficeOnOfficeList(officeName) {
     try {
         let connection = await DB.dbConnection();
@@ -55,5 +72,6 @@ async function insertOfficeOnOfficeDetails(args) {
 
 module.exports = {
     inertOfficeOnOfficeList,
-    insertOfficeOnOfficeDetails
+    insertOfficeOnOfficeDetails,
+    inertCompanyOnOfficeList
 }

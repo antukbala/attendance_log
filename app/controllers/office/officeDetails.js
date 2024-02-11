@@ -8,6 +8,51 @@ const { CONSTANTS } = require('../../services/constants');
 const Helper = require('../../services/helper');
 const Encryption = require('../../services/encryption');
 
+async function addCompany(req, res) {
+    try {
+        const body = req.body;
+        let values = {};
+
+        values.companyName = body.company_name;
+        values.superAdmin = body.super_admin;
+
+        const companyId = await officeDetailsModel.inertCompanyOnOfficeList(values.companyName);
+        if ([0, -1, undefined, null].includes(companyId)) {
+            return res.send(CONSTANTS.FINAL_RESPONSE.MAKE_CUSTOM_RESPONSE(['message'], ['company not added']));
+        }
+
+        const paramsForSuperAdminAdd = {
+            officeId: companyId, name: values.superAdmin.name, phone: values.superAdmin.phone,
+            email: values.superAdmin.email, adminType: values.superAdmin.type
+        };
+        const superAdminId = await superAdminModel.insertSuperAdminForOffice(paramsForSuperAdminAdd);
+
+        if ([0, -1, undefined, null].includes(superAdminId)) {
+            const response = {
+                company_id: companyId,
+                super_admin_id: null
+            };
+            return res.send(CONSTANTS.FINAL_RESPONSE.MAKE_CUSTOM_RESPONSE(['status', 'message', 'data'], [1001, 'company added but could not add super admin', response]));
+        }
+        
+        const response = {
+            company_id: companyId,
+            company_name: values.companyName,
+            super_admin: {
+                id: superAdminId,
+                name: values.superAdmin.name,
+                email: values.superAdmin.email,
+                phone: values.superAdmin.phone,
+                type: values.superAdmin.type
+            }
+        };
+        
+        return res.send(CONSTANTS.FINAL_RESPONSE.MAKE_CUSTOM_RESPONSE(['status', 'message', 'data'], [1000, 'company added with super admin', response]));
+    } catch (error) {
+        return res.send(error);
+    }
+}
+
 async function addOffice(req, res) {
     try {
         const body = req.body;
@@ -186,5 +231,5 @@ async function addOffice(req, res) {
 }
 
 module.exports = {
-    addOffice
+    addCompany
 }

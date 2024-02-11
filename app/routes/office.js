@@ -12,6 +12,10 @@ function includeRoutes(app) {
             // payloadMiddleware.decryptPayload,
             officeDetails.addCompany
         ]);
+
+        app.get('/company', [
+            officeDetails.getAllCompany
+        ]);
     } catch (error) {
         console.log(error);
     }

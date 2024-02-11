@@ -35,7 +35,14 @@ const Office = {
 
     InsertOfficeDetailsOnOfficeDetails:
     `insert into office_details set office_id = ?, office_branch_name = ?, address = ?, latitude = ?, longitude = ?,
-    allowed_distance = ?, checkin_time = ?, checkout_time = ?, time_flexibility = ?, status = ?;`
+    allowed_distance = ?, checkin_time = ?, checkout_time = ?, time_flexibility = ?, status = ?;`,
+
+    GetAllOfficeDetails:
+    `select ol.office_id, ol.office_name, ol.status office_status,
+    sa.admin_id, sa.name admin_name, sa.phone admin_phone, sa.email admin_email,
+    sa.super_admin_type admin_type, sa.status admin_status, ol.created_on
+    from office_list ol inner join super_admins sa on ol.office_id = sa.office_id
+    order by ol.created_on;`,
 };
 
 const SuperAdmin = {

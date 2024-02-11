@@ -230,6 +230,17 @@ async function addOffice(req, res) {
     }
 }
 
+async function getAllCompany(req, res) {
+    try {
+        const companyList = await officeDetailsModel.getAllCompanyDetails();
+        return res.send(CONSTANTS.FINAL_RESPONSE.MAKE_CUSTOM_RESPONSE(['status', 'message', 'data'], [1000, 'all company list', companyList]));
+    } catch (error) {
+        console.log(error);
+        res.send(error);
+    }
+}
+
 module.exports = {
-    addCompany
+    addCompany,
+    getAllCompany
 }

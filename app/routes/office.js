@@ -18,6 +18,11 @@ function includeRoutes(app) {
             officeDetails.addOffice
         ]);
 
+        app.post('/department', [
+            // payloadMiddleware.decryptPayload,
+            officeDetails.addDepartment
+        ]);
+
         app.get('/company', [
             officeDetails.getAllCompany
         ]);

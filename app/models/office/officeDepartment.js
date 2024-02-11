@@ -1,12 +1,12 @@
 const DB = require('../../../libs/dbConnect/mysql/attendanceDB');
 const SQL = require('../sqlQueries');
 
-async function insertDepartmentOfOffice(officeId, officeDetailsId, departmentName) {
+async function insertDepartmentOfOffice(officeId, departmentName) {
     try {
         let connection = await DB.dbConnection();
         try {
             let query = SQL.OfficeDepartment.InsertDepartmentDetails;
-            let params = [ officeId, officeDetailsId, departmentName, 'active' ];
+            let params = [ officeId, departmentName, 'active' ];
             const department = await DB.doQuery(connection, query, params);
             return department.hasOwnProperty('insertId') ? department.insertId : -1;
         } finally {

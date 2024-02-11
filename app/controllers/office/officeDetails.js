@@ -8,6 +8,30 @@ const { CONSTANTS } = require('../../services/constants');
 const Helper = require('../../services/helper');
 const Encryption = require('../../services/encryption');
 
+async function addDepartment(req, res) {
+    try {
+        const body = req.body;
+        let values = {
+            companyId: body.company_id,
+            departmentName: body.department_name
+        };
+
+        const departmentId = await officeDepartmentModel.insertDepartmentOfOffice(values.companyId, values.departmentName);
+        if (departmentId === null) {
+            return res.send(CONSTANTS.FINAL_RESPONSE.MAKE_CUSTOM_RESPONSE(['status', 'message'], [2000, 'could not insert department']));
+        }
+        
+        const response = {
+            company_id: values.companyId,
+            department_id: departmentId,
+            department_name: values.departmentName
+        };
+        return res.send(CONSTANTS.FINAL_RESPONSE.MAKE_CUSTOM_RESPONSE(['status', 'message', 'data'], [1000, 'added department', response]));
+    } catch (error) {
+        return res.send(error);
+    }
+}
+
 async function addOffice(req, res) {
     try {
         const body = req.body;
@@ -274,5 +298,6 @@ async function getAllCompany(req, res) {
 module.exports = {
     addCompany,
     addOffice,
+    addDepartment,
     getAllCompany
 }

@@ -52,7 +52,7 @@ const SuperAdmin = {
 
 const OfficeDepartment = {
     InsertDepartmentDetails:
-    `insert into user_departments set office_id = ?, office_details_id = ?, department_name = ?, status = ?;`
+    `insert into user_departments set office_id = ?, department_name = ?, status = ?;`
 };
 
 const JobRole = {

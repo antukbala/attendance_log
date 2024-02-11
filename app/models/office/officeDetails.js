@@ -70,6 +70,24 @@ async function insertOfficeOnOfficeDetails(args) {
     }
 }
 
+async function insertNewOfficeForCompany(args) {
+    try {
+        let connection = await DB.dbConnection();
+        try {
+            let query = SQL.Office.InsertOfficeDetailsOnOfficeDetails;
+            let params = [ args.companyId, args.officeName, args.address, args.latitude, args.longitude,
+                args.allowedDistance, args.checkinTime, args.checkoutTime, args.timeFlexibility, 'active' ];
+            const office = await DB.doQuery(connection, query, params);
+            return office.hasOwnProperty('insertId') ? office.insertId : -1;
+        } finally {
+            connection.release();
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 // async function getAttendanceSetupOfOfficeByUserId(userId) {
 //     try {
 //         let connection = await DB.dbConnection();
@@ -91,5 +109,6 @@ module.exports = {
     inertOfficeOnOfficeList,
     insertOfficeOnOfficeDetails,
     inertCompanyOnOfficeList,
+    insertNewOfficeForCompany,
     getAllCompanyDetails
 }

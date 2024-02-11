@@ -60,11 +60,17 @@ const JobRole = {
     `insert into user_job_roles set department_id = ?, job_title = ?, job_description = ?, status = ?;`
 };
 
+const Employee = {
+    InsertEmployeeDetails:
+    `insert into user_details set office_id = ?, name = ?, mobile = ?, email = ?, job_role_id = ?, status = ?;`
+};
+
 module.exports = {
     Attendance,
     Login,
     Office,
     SuperAdmin,
     OfficeDepartment,
-    JobRole
+    JobRole,
+    Employee
 }

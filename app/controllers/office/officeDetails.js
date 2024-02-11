@@ -4,9 +4,36 @@ const officeDetailsModel = require('../../models/office/officeDetails');
 const superAdminModel = require('../../models/office/superAdmin');
 const officeDepartmentModel = require('../../models/office/officeDepartment');
 const jobRoleModel = require('../../models/office/jobRole');
+const employeeModel = require('../../models/office/employee');
 const { CONSTANTS } = require('../../services/constants');
 const Helper = require('../../services/helper');
 const Encryption = require('../../services/encryption');
+
+async function addEmployee(req, res) {
+    try {
+        const body = req.body;
+        let values = {
+            officeId: body.office_id,
+            name: body.name,
+            email: body.email,
+            phone: body.phone,
+            designationId: body.designation_id,
+        }
+
+        const employeeId = await employeeModel.insertEmployeeForOffice(values);
+        if (employeeId === -1) {
+            return res.send(CONSTANTS.FINAL_RESPONSE.MAKE_CUSTOM_RESPONSE(['status', 'message'], [2000, 'could not insert employee']));
+        }
+        
+        const response = {
+            office_id: values.officeId,
+            employee_id: employeeId
+        };
+        return res.send(CONSTANTS.FINAL_RESPONSE.MAKE_CUSTOM_RESPONSE(['status', 'message', 'data'], [1000, 'added employee', response]));
+    } catch (error) {
+        return res.send(error);
+    }
+}
 
 async function addDesignation(req, res) {
     try {
@@ -326,5 +353,6 @@ module.exports = {
     addOffice,
     addDepartment,
     addDesignation,
+    addEmployee,
     getAllCompany
 }

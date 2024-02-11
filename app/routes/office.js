@@ -23,6 +23,11 @@ function includeRoutes(app) {
             officeDetails.addDepartment
         ]);
 
+        app.post('/designation', [
+            // payloadMiddleware.decryptPayload,
+            officeDetails.addDesignation
+        ]);
+
         app.get('/company', [
             officeDetails.getAllCompany
         ]);

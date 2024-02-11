@@ -8,6 +8,32 @@ const { CONSTANTS } = require('../../services/constants');
 const Helper = require('../../services/helper');
 const Encryption = require('../../services/encryption');
 
+async function addDesignation(req, res) {
+    try {
+        const body = req.body;
+        let values = {
+            departmentId: body.department_id,
+            designation: body.designation,
+            jobDescription: body.job_description
+        };
+
+        const designationId = await jobRoleModel.insertJobRoleOfDepartment(values.departmentId, values.designation, values.jobDescription);
+        if (designationId === -1) {
+            return res.send(CONSTANTS.FINAL_RESPONSE.MAKE_CUSTOM_RESPONSE(['status', 'message'], [2000, 'could not insert designation']));
+        }
+        
+        const response = {
+            department_id: values.departmentId,
+            designation_id: designationId,
+            designation: values.designation,
+            job_description: values.jobDescription
+        };
+        return res.send(CONSTANTS.FINAL_RESPONSE.MAKE_CUSTOM_RESPONSE(['status', 'message', 'data'], [1000, 'added designation', response]));
+    } catch (error) {
+        return res.send(error);
+    }
+}
+
 async function addDepartment(req, res) {
     try {
         const body = req.body;
@@ -299,5 +325,6 @@ module.exports = {
     addCompany,
     addOffice,
     addDepartment,
+    addDesignation,
     getAllCompany
 }
